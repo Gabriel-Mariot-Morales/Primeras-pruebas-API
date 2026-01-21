@@ -1,24 +1,40 @@
 {
 	"info": {
-		"_postman_id": "b1b1b1b1-1234-1234-1234-1234567890ab",
-		"name": "Tierra Media API (Completa)",
-		"description": "Colección completa con endpoints Opcionales",
+		"_postman_id": "c2c2c2c2-5678-5678-5678-1234567890cd",
+		"name": "Tierra Media API (Dinámica y Completa)",
+		"description": "Colección adaptada para usar variables dinámicas. Ejecutar en orden secuencial para que las dependencias (IDs) funcionen correctamente.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
+	"variable": [
+		{ "key": "base_url", "value": "http://localhost/api", "type": "string" },
+		{ "key": "region_id", "value": "", "type": "string" },
+		{ "key": "realm_id", "value": "", "type": "string" },
+		{ "key": "hero_id", "value": "", "type": "string" },
+		{ "key": "creature_id", "value": "", "type": "string" },
+		{ "key": "artifact_id", "value": "", "type": "string" }
+	],
 	"item": [
 		{
 			"name": "1. Regiones",
 			"item": [
 				{
-					"name": "Listar Regiones",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/regions" }
-				},
-				{
-					"name": "Ver Región",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/regions/1" }
-				},
-				{
-					"name": "Crear Región",
+					"name": "Crear Región (Valinor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"region_id\", jsonData.id);",
+									"console.log(\"Region ID guardado: \" + jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -27,8 +43,16 @@
 							"raw": "{\n    \"name\": \"Valinor\"\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/regions"
+						"url": "{{base_url}}/regions"
 					}
+				},
+				{
+					"name": "Listar Regiones",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/regions" }
+				},
+				{
+					"name": "Ver Región Creada",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/regions/{{region_id}}" }
 				},
 				{
 					"name": "Actualizar Región",
@@ -40,12 +64,8 @@
 							"raw": "{\n    \"name\": \"Valinor (Tierras Imperecederas)\"\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/regions/1"
+						"url": "{{base_url}}/regions/{{region_id}}"
 					}
-				},
-				{
-					"name": "Borrar Región",
-					"request": { "method": "DELETE", "header": [], "url": "http://localhost/api/regions/1" }
 				}
 			]
 		},
@@ -53,25 +73,41 @@
 			"name": "2. Reinos",
 			"item": [
 				{
-					"name": "Listar Reinos",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/realms" }
-				},
-				{
-					"name": "Ver Reino",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/realms/1" }
-				},
-				{
-					"name": "Crear Reino",
+					"name": "Crear Reino (Isengard)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"realm_id\", jsonData.id);",
+									"console.log(\"Realm ID guardado: \" + jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Isengard\",\n    \"ruler\": \"Saruman\",\n    \"alignment\": \"Mal\",\n    \"region_id\": 5\n}",
+							"raw": "{\n    \"name\": \"Isengard\",\n    \"ruler\": \"Saruman\",\n    \"alignment\": \"Mal\",\n    \"region_id\": {{region_id}}\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/realms"
+						"url": "{{base_url}}/realms"
 					}
+				},
+				{
+					"name": "Listar Reinos",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/realms" }
+				},
+				{
+					"name": "Ver Reino Creado",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/realms/{{realm_id}}" }
 				},
 				{
 					"name": "Actualizar Reino",
@@ -83,12 +119,8 @@
 							"raw": "{\n    \"alignment\": \"Neutral\"\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/realms/1"
+						"url": "{{base_url}}/realms/{{realm_id}}"
 					}
-				},
-				{
-					"name": "Borrar Reino",
-					"request": { "method": "DELETE", "header": [], "url": "http://localhost/api/realms/1" }
 				}
 			]
 		},
@@ -96,25 +128,41 @@
 			"name": "3. Héroes",
 			"item": [
 				{
-					"name": "Listar Héroes",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/heroes" }
-				},
-				{
-					"name": "Ver Héroe",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/heroes/1" }
-				},
-				{
-					"name": "Crear Héroe",
+					"name": "Crear Héroe (Boromir)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"hero_id\", jsonData.id);",
+									"console.log(\"Hero ID guardado: \" + jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Boromir\",\n    \"race\": \"Humano\",\n    \"rank\": \"Capitán\",\n    \"realm_id\": 1,\n    \"alive\": false\n}",
+							"raw": "{\n    \"name\": \"Boromir\",\n    \"race\": \"Humano\",\n    \"rank\": \"Capitán\",\n    \"realm_id\": {{realm_id}},\n    \"alive\": false\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/heroes"
+						"url": "{{base_url}}/heroes"
 					}
+				},
+				{
+					"name": "Listar Héroes",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/heroes" }
+				},
+				{
+					"name": "Ver Héroe Creado",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/heroes/{{hero_id}}" }
 				},
 				{
 					"name": "Actualizar Héroe",
@@ -126,12 +174,8 @@
 							"raw": "{\n    \"alive\": true\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/heroes/1"
+						"url": "{{base_url}}/heroes/{{hero_id}}"
 					}
-				},
-				{
-					"name": "Borrar Héroe",
-					"request": { "method": "DELETE", "header": [], "url": "http://localhost/api/heroes/1" }
 				}
 			]
 		},
@@ -139,25 +183,41 @@
 			"name": "4. Criaturas",
 			"item": [
 				{
-					"name": "Listar Criaturas",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/creatures" }
-				},
-				{
-					"name": "Ver Criatura",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/creatures/1" }
-				},
-				{
-					"name": "Crear Criatura",
+					"name": "Crear Criatura (Ella-Laraña)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"creature_id\", jsonData.id);",
+									"console.log(\"Creature ID guardado: \" + jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Ella-Laraña\",\n    \"species\": \"Araña Gigante\",\n    \"threat_level\": 8,\n    \"region_id\": 3\n}",
+							"raw": "{\n    \"name\": \"Ella-Laraña\",\n    \"species\": \"Araña Gigante\",\n    \"threat_level\": 8,\n    \"region_id\": {{region_id}}\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/creatures"
+						"url": "{{base_url}}/creatures"
 					}
+				},
+				{
+					"name": "Listar Criaturas",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/creatures" }
+				},
+				{
+					"name": "Ver Criatura Creada",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/creatures/{{creature_id}}" }
 				},
 				{
 					"name": "Actualizar Criatura",
@@ -169,12 +229,8 @@
 							"raw": "{\n    \"threat_level\": 10\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/creatures/1"
+						"url": "{{base_url}}/creatures/{{creature_id}}"
 					}
-				},
-				{
-					"name": "Borrar Criatura",
-					"request": { "method": "DELETE", "header": [], "url": "http://localhost/api/creatures/1" }
 				}
 			]
 		},
@@ -182,25 +238,41 @@
 			"name": "5. Artefactos",
 			"item": [
 				{
-					"name": "Listar Artefactos",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/artifacts" }
-				},
-				{
-					"name": "Ver Artefacto",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/artifacts/1" }
-				},
-				{
-					"name": "Crear Artefacto (Con Héroe)",
+					"name": "Crear Artefacto (Dardo - Con Array Héroes)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"artifact_id\", jsonData.id);",
+									"console.log(\"Artifact ID guardado: \" + jsonData.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Dardo\",\n    \"type\": \"Espada\",\n    \"origin_realm_id\": 1,\n    \"power_level\": 40,\n    \"description\": \"Brilla cuando hay orcos cerca\",\n    \"hero_id\": 4\n}",
+							"raw": "{\n    \"name\": \"Dardo\",\n    \"type\": \"Espada\",\n    \"origin_realm_id\": {{realm_id}},\n    \"power_level\": 95,\n    \"description\": \"Brilla cuando hay orcos cerca\",\n    \"hero_ids\": [{{hero_id}}]\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/artifacts"
+						"url": "{{base_url}}/artifacts"
 					}
+				},
+				{
+					"name": "Listar Artefactos",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/artifacts" }
+				},
+				{
+					"name": "Ver Artefacto Creado",
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/artifacts/{{artifact_id}}" }
 				},
 				{
 					"name": "Actualizar Artefacto",
@@ -209,15 +281,11 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"power_level\": 45\n}",
+							"raw": "{\n    \"power_level\": 100\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/artifacts/1"
+						"url": "{{base_url}}/artifacts/{{artifact_id}}"
 					}
-				},
-				{
-					"name": "Borrar Artefacto",
-					"request": { "method": "DELETE", "header": [], "url": "http://localhost/api/artifacts/1" }
 				}
 			]
 		},
@@ -225,16 +293,16 @@
 			"name": "6. Opcionales",
 			"item": [
 				{
-					"name": "Asignar Artefacto a Héroe",
+					"name": "Asignar Artefacto a Héroe (Endpoint extra)",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hero_id\": 3,\n    \"artifact_id\": 1\n}",
+							"raw": "{\n    \"hero_id\": {{hero_id}},\n    \"artifact_id\": {{artifact_id}}\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/artifact-hero"
+						"url": "{{base_url}}/artifact-hero"
 					}
 				},
 				{
@@ -244,39 +312,60 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"hero_id\": 3,\n    \"artifact_id\": 1\n}",
+							"raw": "{\n    \"hero_id\": {{hero_id}},\n    \"artifact_id\": {{artifact_id}}\n}",
 							"options": { "raw": { "language": "json" } }
 						},
-						"url": "http://localhost/api/artifact-hero"
+						"url": "{{base_url}}/artifact-hero"
 					}
 				},
 				{
 					"name": "Listar Artefactos de un Héroe",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/heroes/1/artifacts" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/heroes/{{hero_id}}/artifacts" }
 				},
 				{
 					"name": "Listar Dueños de un Artefacto",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/artifacts/1/heroes" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/artifacts/{{artifact_id}}/heroes" }
 				},
 				{
 					"name": "Héroes de un Reino",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/realms/1/heroes" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/realms/{{realm_id}}/heroes" }
 				},
 				{
 					"name": "Criaturas de una Región",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/regions/3/creatures" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/regions/{{region_id}}/creatures" }
 				},
 				{
 					"name": "Héroes Vivos",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/heroes/alive" }
-				},
-				{
-					"name": "Criaturas Peligrosas (Nivel 8+)",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/creatures/dangerous?level=8" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/heroes/alive" }
 				},
 				{
 					"name": "Artefactos Top (>90)",
-					"request": { "method": "GET", "header": [], "url": "http://localhost/api/artifacts/top" }
+					"request": { "method": "GET", "header": [], "url": "{{base_url}}/artifacts/top" }
+				}
+			]
+		},
+		{
+			"name": "7. Limpieza (Borrado en orden)",
+			"item": [
+				{
+					"name": "Borrar Artefacto",
+					"request": { "method": "DELETE", "header": [], "url": "{{base_url}}/artifacts/{{artifact_id}}" }
+				},
+				{
+					"name": "Borrar Criatura",
+					"request": { "method": "DELETE", "header": [], "url": "{{base_url}}/creatures/{{creature_id}}" }
+				},
+				{
+					"name": "Borrar Héroe",
+					"request": { "method": "DELETE", "header": [], "url": "{{base_url}}/heroes/{{hero_id}}" }
+				},
+				{
+					"name": "Borrar Reino",
+					"request": { "method": "DELETE", "header": [], "url": "{{base_url}}/realms/{{realm_id}}" }
+				},
+				{
+					"name": "Borrar Región",
+					"request": { "method": "DELETE", "header": [], "url": "{{base_url}}/regions/{{region_id}}" }
 				}
 			]
 		}
